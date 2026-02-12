@@ -1,0 +1,161 @@
+/* Suno Waveform Seeker – injected styles */
+
+/* Hide native elements when replaced */
+.suno-wf-hidden {
+  display: none !important;
+}
+
+/* ─── Root layout ────────────────────────────────────────────── */
+
+.suno-wf-seeker-root {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+/* ─── Transport buttons (prev / play / next) ─────────────────── */
+
+.suno-wf-transport {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.suno-wf-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.suno-wf-btn:hover {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.suno-wf-btn:active {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.suno-wf-btn:focus {
+  outline: none;
+}
+
+.suno-wf-btn:focus-visible {
+  outline: 2px solid rgba(120, 220, 232, 0.5);
+  outline-offset: 1px;
+}
+
+.suno-wf-btn svg {
+  display: block;
+}
+
+/* Small transport button (prev/next) */
+.suno-wf-btn-sm {
+  width: 28px;
+  height: 28px;
+}
+
+.suno-wf-btn-sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Play/pause button (slightly larger) */
+.suno-wf-btn-play {
+  width: 32px;
+  height: 32px;
+}
+
+.suno-wf-btn-play svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ─── Waveform container ─────────────────────────────────────── */
+
+.suno-wf-seeker-container {
+  flex: 1;
+  min-width: 80px;
+  height: 32px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: visible;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.suno-wf-seeker-container:focus {
+  outline: none;
+}
+
+.suno-wf-seeker-container:focus-visible {
+  outline: 2px solid rgba(120, 220, 232, 0.5);
+  outline-offset: 2px;
+}
+
+/* Canvas fills the container */
+.suno-wf-seeker-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* ─── Time labels ────────────────────────────────────────────── */
+
+.suno-wf-seeker-time {
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 2.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.suno-wf-seeker-time-current {
+  text-align: right;
+}
+
+.suno-wf-seeker-time-total {
+  text-align: left;
+}
+
+/* ─── Hover tooltip ──────────────────────────────────────────── */
+
+.suno-wf-hover-tooltip {
+  position: absolute;
+  top: -4px;
+  padding: 2px 5px;
+  font-size: 10px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.12s ease;
+  white-space: nowrap;
+  z-index: 10;
+  font-variant-numeric: tabular-nums;
+}
+
+.suno-wf-hover-tooltip--visible {
+  opacity: 1;
+}

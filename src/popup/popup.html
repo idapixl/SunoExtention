@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      width: 260px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      color: #e0e0e0;
+      background: #1a1a2e;
+      margin: 0;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .header h1 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .version {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .setting-row label {
+      cursor: pointer;
+    }
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle:checked {
+      background: rgba(120, 220, 232, 0.7);
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle:checked::after {
+      transform: translateX(16px);
+    }
+    .shortcuts {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+      color: #666;
+    }
+    .shortcuts dt { color: rgba(120, 220, 232, 0.8); display: inline; }
+    .shortcuts dd { display: inline; margin: 0 0 4px 4px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Suno Waveform Seeker</h1>
+  </div>
+  <div class="version" id="version"></div>
+
+  <div class="setting-row">
+    <label for="showSpeed">Speed control</label>
+    <input type="checkbox" id="showSpeed" class="toggle">
+  </div>
+  <div class="setting-row">
+    <label for="showLoop">Loop button</label>
+    <input type="checkbox" id="showLoop" class="toggle">
+  </div>
+  <div class="setting-row">
+    <label for="keyboardShortcuts">Keyboard shortcuts</label>
+    <input type="checkbox" id="keyboardShortcuts" class="toggle">
+  </div>
+
+  <div class="shortcuts">
+    <dl>
+      <div><dt>Space</dt><dd>Play/Pause</dd></div>
+      <div><dt>Shift+←→</dt><dd>Skip 10s</dd></div>
+      <div><dt>M</dt><dd>Mute</dd></div>
+    </dl>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

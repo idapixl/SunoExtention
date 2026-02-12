@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite build:*)",
+      "Bash(npm run build:*)",
+      "Bash(del \"d:\\\\My_Docs\\\\Scripting_Projects\\\\Other_Projects\\\\SitesAndApps\\\\SunoExtention\\\\vite.config.ts\")",
+      "Bash(node scripts/generate-icons.js:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node scripts/build.js:*)",
+      "Bash(powershell -Command \"Compress-Archive -Path * -DestinationPath ..\\\\suno-waveform-seeker.zip -Force\")"
+    ]
+  }
+}
