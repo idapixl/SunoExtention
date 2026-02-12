@@ -1,23 +1,10 @@
-import { findPlaybarRoot, findNativeButton, findPlayingAudio } from './dom-selectors';
+import { findPlayingAudio } from './dom-selectors';
 import { updatePlayPauseIcon } from './transport-proxy';
-
-/**
- * Find a native button by trying scoped search first, then document-wide fallback.
- */
-function findNativeButtonRobust(labelPart: string): HTMLButtonElement | null {
-  const playbar = findPlaybarRoot();
-  if (playbar) {
-    const scoped = findNativeButton(labelPart, playbar);
-    if (scoped) return scoped;
-  }
-  return findNativeButton(labelPart);
-}
 
 /**
  * Global keyboard shortcuts for playback control.
  * Uses capture phase to fire before Suno's own handlers can stop propagation.
- * Play/pause clicks native Suno buttons to keep React state in sync,
- * with direct audio fallback.
+ * Play/pause uses direct audio manipulation for reliability.
  */
 export function initKeyboardShortcuts(
   getAudio: () => HTMLAudioElement | null,
@@ -33,24 +20,16 @@ export function initKeyboardShortcuts(
       case ' ': {
         e.preventDefault();
         e.stopImmediatePropagation();
-        // Try native button first
-        const pauseBtn = findNativeButtonRobust('Pause button');
-        const playBtn = findNativeButtonRobust('Play button');
-        const nativeBtn = pauseBtn || playBtn;
-        if (nativeBtn) {
-          nativeBtn.click();
-          setTimeout(updatePlayPauseIcon, 80);
-        } else {
-          // Fallback: direct audio manipulation
-          const audio = getAudio() || findPlayingAudio();
-          if (audio) {
-            if (audio.paused) {
-              audio.play();
-            } else {
-              audio.pause();
-            }
-            setTimeout(updatePlayPauseIcon, 80);
+        // Direct audio manipulation (reliable; native button click through
+        // SR-only CSS is unreliable with React event delegation)
+        const audio = getAudio() || findPlayingAudio();
+        if (audio) {
+          if (audio.paused) {
+            audio.play();
+          } else {
+            audio.pause();
           }
+          setTimeout(updatePlayPauseIcon, 80);
         }
         break;
       }

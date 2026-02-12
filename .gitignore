@@ -2,4 +2,7 @@ node_modules/
 dist/
 *.zip
 .playwright-mcp/
-nul
+*.log
+.DS_Store
+Thumbs.db
+*.vsix

@@ -100,24 +100,10 @@ export function createProxyButton(
     e.preventDefault();
     e.stopPropagation();
 
-    if (isPlayPause) startDebounce();
-
-    // Try each label part with robust search
-    for (let i = 0; i < parts.length; i++) {
-      const native = findNativeButtonRobust(parts[i]!);
-      if (native) {
-        native.click();
-        if (isPlayPause) {
-          // Optimistic icon flip: toggle immediately
-          const currentLabel = playPauseBtn?.getAttribute('aria-label') || '';
-          applyIcon(currentLabel === 'Pause');
-        }
-        return;
-      }
-    }
-
-    // Fallback for play/pause: manipulate audio directly
+    // Play/pause: always use direct audio manipulation (most reliable).
+    // Clicking native buttons through SR-only CSS is unreliable with React.
     if (isPlayPause) {
+      startDebounce();
       const audio = findPlayingAudio();
       if (audio) {
         if (audio.paused) {
@@ -127,6 +113,16 @@ export function createProxyButton(
           audio.pause();
           applyIcon(true);
         }
+      }
+      return;
+    }
+
+    // Non play/pause (prev/next): click native button
+    for (let i = 0; i < parts.length; i++) {
+      const native = findNativeButtonRobust(parts[i]!);
+      if (native) {
+        native.click();
+        return;
       }
     }
   });
