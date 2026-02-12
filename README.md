@@ -5,6 +5,24 @@
 
 A Chrome extension that replaces Suno's default progress bar with an interactive waveform visualizer. Seek to any position, control playback speed, loop tracks, and use keyboard shortcuts — all from a sleek dark-themed UI that blends right into suno.com.
 
+## Screenshots
+
+### Waveform bar with transport controls, speed, and loop
+
+![Waveform bar close-up](assets/screenshots/waveform-bar.png)
+
+### Full page view on suno.com
+
+![Full page view](assets/screenshots/full-page.png)
+
+### Waveform visualization during playback
+
+![Waveform playback](assets/screenshots/waveform-playback.png)
+
+### Waveform on a different track
+
+![Waveform detail](assets/screenshots/waveform-detail.png)
+
 ## Features
 
 - **Interactive waveform** — Canvas-rendered bars decoded from the actual audio
