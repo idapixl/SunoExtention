@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Suno Waveform Seeker - Audio Visualizer",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Replaces Suno's progress bar with an interactive waveform visualizer. Adds speed control, loop, keyboard shortcuts, and seeking.",
   "permissions": ["storage"],
   "action": {

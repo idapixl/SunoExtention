@@ -1,21 +1,8 @@
 /* Suno Waveform Seeker – injected styles */
 
-/* Hide native elements when replaced.
-   Transport row uses visibility-based hiding so native buttons
-   remain clickable via proxy (.click()). Seeker row uses display:none. */
+/* Hide native seeker row when our waveform is active */
 .suno-wf-hidden {
   display: none !important;
-}
-.suno-wf-hidden-transport {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-  padding: 0 !important;
-  margin: -1px !important;
 }
 
 /* ─── Root layout ────────────────────────────────────────────── */
@@ -32,71 +19,105 @@
   overflow: visible;
 }
 
-/* ─── Transport buttons (prev / play / next) ─────────────────── */
+/* ─── Active layout: single-row with native transport + waveform ─── */
 
-.suno-wf-transport {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex-shrink: 0;
+.suno-wf-layout {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0 !important;
 }
 
-.suno-wf-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.65);
-  cursor: pointer;
-  padding: 0;
-  border-radius: 50%;
-  transition: color 0.15s ease, background 0.15s ease;
+/* Waveform fills remaining space in row mode */
+.suno-wf-layout .suno-wf-seeker-root {
+  width: auto;
+  flex: 1;
+  min-width: 0;
 }
 
-.suno-wf-btn:hover {
-  color: rgba(255, 255, 255, 1);
-  background: rgba(255, 255, 255, 0.08);
+/* Tighten the native transport row */
+.suno-wf-layout > :first-child {
+  gap: 2px !important;
+  flex-shrink: 0 !important;
 }
 
-.suno-wf-btn:active {
-  color: rgba(255, 255, 255, 1);
-  background: rgba(255, 255, 255, 0.14);
+/* Hide shuffle & repeat — not needed in compact layout */
+.suno-wf-layout button[aria-label*="shuffle" i],
+.suno-wf-layout button[aria-label*="repeat" i] {
+  display: none !important;
 }
 
-.suno-wf-btn:focus {
-  outline: none;
+/* ─── Restyle native prev/next buttons ──────────────────────── */
+
+.suno-wf-layout button[aria-label*="Previous Song"],
+.suno-wf-layout button[aria-label*="Next Song"] {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  opacity: 1 !important;
+  border-radius: 50% !important;
+  transition: color 0.15s ease, background 0.15s ease !important;
 }
 
-.suno-wf-btn:focus-visible {
-  outline: 2px solid rgba(120, 220, 232, 0.5);
-  outline-offset: 1px;
+.suno-wf-layout button[aria-label*="Previous Song"]:hover,
+.suno-wf-layout button[aria-label*="Next Song"]:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
-.suno-wf-btn svg {
-  display: block;
+.suno-wf-layout button[aria-label*="Previous Song"]:active,
+.suno-wf-layout button[aria-label*="Next Song"]:active {
+  background: rgba(255, 255, 255, 0.14) !important;
 }
 
-/* Small transport button (prev/next) */
-.suno-wf-btn-sm {
-  width: 28px;
-  height: 28px;
+.suno-wf-layout button[aria-label*="Previous Song"] svg,
+.suno-wf-layout button[aria-label*="Next Song"] svg {
+  width: 14px !important;
+  height: 14px !important;
 }
 
-.suno-wf-btn-sm svg {
-  width: 14px;
-  height: 14px;
+/* ─── Restyle native play/pause button ──────────────────────── */
+
+.suno-wf-layout button[aria-label*="Play button"],
+.suno-wf-layout button[aria-label*="Pause button"] {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  opacity: 1 !important;
+  border-radius: 50% !important;
+  transition: color 0.15s ease, background 0.15s ease !important;
 }
 
-/* Play/pause button (slightly larger) */
-.suno-wf-btn-play {
-  width: 32px;
-  height: 32px;
+.suno-wf-layout button[aria-label*="Play button"]:hover,
+.suno-wf-layout button[aria-label*="Pause button"]:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
-.suno-wf-btn-play svg {
-  width: 16px;
-  height: 16px;
+.suno-wf-layout button[aria-label*="Play button"]:active,
+.suno-wf-layout button[aria-label*="Pause button"]:active {
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+.suno-wf-layout button[aria-label*="Play button"] svg,
+.suno-wf-layout button[aria-label*="Pause button"] svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Hide Suno's pseudo-element hover overlays on restyled buttons */
+.suno-wf-layout button[aria-label*="Previous Song"]::before,
+.suno-wf-layout button[aria-label*="Previous Song"]::after,
+.suno-wf-layout button[aria-label*="Next Song"]::before,
+.suno-wf-layout button[aria-label*="Next Song"]::after,
+.suno-wf-layout button[aria-label*="Play button"]::before,
+.suno-wf-layout button[aria-label*="Play button"]::after,
+.suno-wf-layout button[aria-label*="Pause button"]::before,
+.suno-wf-layout button[aria-label*="Pause button"]::after {
+  display: none !important;
 }
 
 /* ─── Waveform container ─────────────────────────────────────── */
@@ -211,6 +232,53 @@
   height: 28px;
   padding: 2px 4px;
   font-variant-numeric: tabular-nums;
+}
+
+/* Shared button base for our custom controls (speed/loop) */
+.suno-wf-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.suno-wf-btn:hover {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.suno-wf-btn:active {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.suno-wf-btn:focus {
+  outline: none;
+}
+
+.suno-wf-btn:focus-visible {
+  outline: 2px solid rgba(120, 220, 232, 0.5);
+  outline-offset: 1px;
+}
+
+.suno-wf-btn svg {
+  display: block;
+}
+
+.suno-wf-btn-sm {
+  width: 28px;
+  height: 28px;
+}
+
+.suno-wf-btn-sm svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* Loop active state */

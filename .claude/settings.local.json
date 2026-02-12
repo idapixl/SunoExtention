@@ -14,7 +14,8 @@
       "Bash(node scripts/build.js:*)",
       "Bash(powershell -Command \"Compress-Archive -Path * -DestinationPath ..\\\\suno-waveform-seeker.zip -Force\")",
       "Bash(npx playwright:*)",
-      "Bash(node scripts/take-screenshots.mjs:*)"
+      "Bash(node scripts/take-screenshots.mjs:*)",
+      "Bash(powershell -Command:*)"
     ]
   }
 }

@@ -46,6 +46,3 @@ export const LOADING = {
   /** Fade-in duration when new bars arrive (ms) */
   FADE_IN_MS: 350,
 } as const;
-
-/** Play/pause icon update debounce after user clicks (ms) */
-export const ICON_DEBOUNCE_MS = 350;

@@ -2,7 +2,6 @@ import { POLLING } from '../shared/constants';
 import type { WaveformApi } from '../waveform/types';
 import { fetchAndDecodeToBars } from '../waveform/audio-decoder';
 import { findNativeRange, findPlayingAudio } from './dom-selectors';
-import { updatePlayPauseIcon, isIconDebouncing, trackAudioEvents } from './transport-proxy';
 import { showWaveformError } from './error-feedback';
 import { onIdleChanged } from './lifecycle';
 
@@ -44,7 +43,6 @@ export function startPolling(
   getWaveformApi: () => WaveformApi | null,
   waveformRoot?: HTMLElement | null,
 ): number {
-  let playPauseCheckCounter = 0;
   let lastDecodedSrc: string | null = null;
   let idleCounter = 0;
   let wasIdle = true;
@@ -55,7 +53,6 @@ export function startPolling(
     if (!waveformApi) return;
 
     const audio = getAudio();
-    trackAudioEvents(audio);
     // Only a real audio element with valid duration counts as activity
     const hasActivity = !!audio && Number.isFinite(audio.duration) && audio.duration > 0;
 
@@ -102,15 +99,6 @@ export function startPolling(
             showWaveformError(waveformRoot, 'Could not decode audio waveform');
           }
         });
-      }
-    }
-
-    // Update play/pause icon periodically (skip during debounce after user click)
-    playPauseCheckCounter++;
-    if (playPauseCheckCounter >= POLLING.PLAY_PAUSE_CHECK_INTERVAL) {
-      playPauseCheckCounter = 0;
-      if (!isIconDebouncing()) {
-        updatePlayPauseIcon();
       }
     }
   }

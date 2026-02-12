@@ -1,9 +1,7 @@
 import type { WaveformApi } from '../waveform/types';
 import { createWaveformSeeker } from '../waveform/seeker-component';
 import { loadSettings, getSettings, watchSettingsChanges } from '../shared/settings';
-import { findNativeRange, findSeekerRow, findTransportRow } from './dom-selectors';
-import { ICON_PREV, ICON_PAUSE, ICON_NEXT } from './icons';
-import { createProxyButton, setPlayPauseBtn, trackAudioEvents } from './transport-proxy';
+import { findNativeRange, findSeekerRow, findPlaybarRoot } from './dom-selectors';
 import { startPolling, getAudio, resetAudioCache } from './polling';
 import { createSpeedControl } from './controls/speed-control';
 import { createLoopButton } from './controls/loop-control';
@@ -12,7 +10,8 @@ import { initKeyboardShortcuts } from './keyboard';
 let waveformApi: WaveformApi | null = null;
 let waveformRoot: HTMLElement | null = null;
 let seekerRowRef: HTMLElement | null = null;
-let transportRowRef: HTMLElement | null = null;
+let playbarRef: HTMLElement | null = null;
+let centerColRef: HTMLElement | null = null;
 let pollRAF: number | null = null;
 let cleanupKeyboard: (() => void) | null = null;
 let isActive = false;
@@ -21,22 +20,24 @@ export function getWaveformApi(): WaveformApi | null {
   return waveformApi;
 }
 
-/** Show our bar and hide native elements. */
+/** Show our waveform bar, hide native seeker, show playbar, activate layout. */
 function activate(): void {
   if (isActive) return;
   isActive = true;
+  if (playbarRef) playbarRef.style.display = '';
+  if (centerColRef) centerColRef.classList.add('suno-wf-layout');
   if (waveformRoot) waveformRoot.style.display = '';
   if (seekerRowRef) seekerRowRef.classList.add('suno-wf-hidden');
-  if (transportRowRef) transportRowRef.classList.add('suno-wf-hidden-transport');
 }
 
-/** Hide our bar and restore native elements. */
+/** Hide our waveform bar, restore native layout, hide playbar when idle. */
 function deactivate(): void {
   if (!isActive) return;
   isActive = false;
+  if (centerColRef) centerColRef.classList.remove('suno-wf-layout');
   if (waveformRoot) waveformRoot.style.display = 'none';
   if (seekerRowRef) seekerRowRef.classList.remove('suno-wf-hidden');
-  if (transportRowRef) transportRowRef.classList.remove('suno-wf-hidden-transport');
+  if (playbarRef) playbarRef.style.display = 'none';
 }
 
 /** Called by polling when idle state changes. */
@@ -63,54 +64,44 @@ function cleanup(): void {
     seekerRowRef.removeAttribute('data-suno-wf');
     seekerRowRef = null;
   }
-  transportRowRef = null;
+  if (playbarRef) {
+    playbarRef.style.display = '';
+    playbarRef = null;
+  }
+  if (centerColRef) {
+    centerColRef.classList.remove('suno-wf-layout');
+    centerColRef = null;
+  }
   if (cleanupKeyboard) {
     cleanupKeyboard();
     cleanupKeyboard = null;
   }
   waveformRoot = null;
   resetAudioCache();
-  trackAudioEvents(null);
-  setPlayPauseBtn(null);
 }
 
 function inject(): boolean {
   const seekerRow = findSeekerRow();
   if (!seekerRow || seekerRow.getAttribute('data-suno-wf') === 'done') return true;
 
-  // Mark as processed but DON'T hide native elements yet — wait for audio
   seekerRow.setAttribute('data-suno-wf', 'done');
   seekerRowRef = seekerRow;
-  transportRowRef = findTransportRow();
+  playbarRef = findPlaybarRoot();
+
+  // Hide the entire playbar initially — activate() will show it when audio is detected
+  if (playbarRef) playbarRef.style.display = 'none';
 
   const settings = getSettings();
 
-  // Build root: [prev] [play] [next] | [time] [waveform] [time] | [speed] [loop]
+  // Build root: [time] [waveform] [time] | [speed] [loop]
+  // Native Suno transport buttons (prev/play/next) are left visible — no proxy needed.
   const root = document.createElement('div');
   root.className = 'suno-wf-seeker-root';
   root.style.display = 'none'; // Hidden until audio is detected
 
-  // Transport buttons
-  const transportGroup = document.createElement('div');
-  transportGroup.className = 'suno-wf-transport';
-
-  const prevBtn = createProxyButton('suno-wf-btn suno-wf-btn-sm', ICON_PREV, 'Previous', 'Previous');
-  const playPauseButton = createProxyButton(
-    'suno-wf-btn suno-wf-btn-play',
-    ICON_PAUSE,
-    'Pause',
-    ['Pause button', 'Play button'],
-  );
-  setPlayPauseBtn(playPauseButton);
-  const nextBtn = createProxyButton('suno-wf-btn suno-wf-btn-sm', ICON_NEXT, 'Next', 'Next');
-
-  transportGroup.appendChild(prevBtn);
-  transportGroup.appendChild(playPauseButton);
-  transportGroup.appendChild(nextBtn);
-  root.appendChild(transportGroup);
-
   seekerRow.parentNode!.insertBefore(root, seekerRow);
   waveformRoot = root;
+  centerColRef = root.parentElement;
 
   // Create waveform (appends time + canvas + time + tooltip into root)
   waveformApi = createWaveformSeeker(root);

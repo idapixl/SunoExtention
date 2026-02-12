@@ -1,10 +1,10 @@
 import { findPlayingAudio } from './dom-selectors';
-import { updatePlayPauseIcon } from './transport-proxy';
 
 /**
  * Global keyboard shortcuts for playback control.
  * Uses capture phase to fire before Suno's own handlers can stop propagation.
  * Play/pause uses direct audio manipulation for reliability.
+ * Suno's native play button handles its own icon updates via React.
  */
 export function initKeyboardShortcuts(
   getAudio: () => HTMLAudioElement | null,
@@ -20,8 +20,6 @@ export function initKeyboardShortcuts(
       case ' ': {
         e.preventDefault();
         e.stopImmediatePropagation();
-        // Direct audio manipulation (reliable; native button click through
-        // SR-only CSS is unreliable with React event delegation)
         const audio = getAudio() || findPlayingAudio();
         if (audio) {
           if (audio.paused) {
@@ -29,7 +27,6 @@ export function initKeyboardShortcuts(
           } else {
             audio.pause();
           }
-          setTimeout(updatePlayPauseIcon, 80);
         }
         break;
       }
